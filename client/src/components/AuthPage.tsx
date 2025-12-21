@@ -6,16 +6,26 @@ const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [error, setError] = useState('')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    setError('')
+    
+    // Validate passwords match for signup
+    if (!isLogin && password !== confirmPassword) {
+      setError('Passwords do not match!')
+      return
+    }
+    
     console.log(isLogin ? 'Login' : 'Signup', { email, password })
   }
 
   return (
     <div className="auth-container">
       <Snowfall 
-        snowflakeCount={200}
+        snowflakeCount={600}
         style={{
           position: 'fixed',
           width: '100vw',
@@ -29,18 +39,30 @@ const AuthPage = () => {
 
         <div className="toggle-buttons">
           <button
-            onClick={() => setIsLogin(true)}
+            onClick={() => {
+              setIsLogin(true)
+              setError('')
+            }}
             className={isLogin ? 'active' : ''}
           >
             Login
           </button>
           <button
-            onClick={() => setIsLogin(false)}
+            onClick={() => {
+              setIsLogin(false)
+              setError('')
+            }}
             className={!isLogin ? 'active' : ''}
           >
             Sign Up
           </button>
         </div>
+
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -59,11 +81,30 @@ const AuthPage = () => {
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value)
+                setError('')
+              }}
               placeholder="••••••••"
               required
             />
           </div>
+
+          {!isLogin && (
+            <div className="form-group">
+              <label>Retype Password</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value)
+                  setError('')
+                }}
+                placeholder="••••••••"
+                required
+              />
+            </div>
+          )}
 
           <button type="submit" className="submit-btn">
             {isLogin ? 'Login' : 'Sign Up'}
