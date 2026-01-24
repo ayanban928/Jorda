@@ -1,0 +1,205 @@
+.dashboard-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #3730a3 100%);
+}
+
+.dashboard-header {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header h1 {
+  font-family: "Cute Font", cursive;
+  font-size: 2rem;
+  color: #1f2937;
+  margin: 0;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: "Cute Font", cursive;
+}
+
+.user-info span {
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+.logout-btn {
+  padding: 8px 16px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: "Cute Font", cursive;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+}
+
+.dashboard-main {
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sheets-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.sheets-header h2 {
+  font-family: "Cute Font", cursive;
+  font-size: 2rem;
+  color: white;
+  margin: 0;
+}
+
+.create-btn {
+  padding: 12px 24px;
+  background: white;
+  color: #2563eb;
+  border: none;
+  border-radius: 8px;
+  font-family: "Cute Font", cursive;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.create-btn:hover {
+  transform: translateY(-2px);
+}
+
+.create-form {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.create-form input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-family: "Cute Font", cursive;
+  font-size: 1rem;
+  margin-bottom: 12px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.save-btn, .cancel-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-family: "Cute Font", cursive;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.save-btn {
+  background: #2563eb;
+  color: white;
+}
+
+.save-btn:hover {
+  background: #1d4ed8;
+}
+
+.cancel-btn {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.cancel-btn:hover {
+  background: #d1d5db;
+}
+
+.loading, .empty-state {
+  text-align: center;
+  color: white;
+  font-family: "Cute Font", cursive;
+  font-size: 1.2rem;
+  padding: 40px;
+}
+
+.sheets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.sheet-card {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.sheet-card:hover {
+  transform: translateY(-4px);
+}
+
+.sheet-card h3 {
+  font-family: "Cute Font", cursive;
+  font-size: 1.5rem;
+  color: #1f2937;
+  margin: 0 0 8px 0;
+}
+
+.job-count {
+  font-family: "Cute Font", cursive;
+  color: #6b7280;
+  margin: 0 0 16px 0;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.view-btn, .delete-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-family: "Cute Font", cursive;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.view-btn {
+  background: #2563eb;
+  color: white;
+}
+
+.view-btn:hover {
+  background: #1d4ed8;
+}
+
+.delete-btn {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.delete-btn:hover {
+  background: #fecaca;
+}
