@@ -1,15 +1,21 @@
 import { useState } from 'react'
 import Snowfall from 'react-snowfall'
+import { authAPI } from '../services/api'
 import './AuthPage.css'
 
-const AuthPage = () => {
+interface AuthPageProps {
+  onLogin: (email: string) => void
+}
+
+const AuthPage = ({ onLogin }: AuthPageProps) => {
   const [isLogin, setIsLogin] = useState(true)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     
@@ -19,7 +25,23 @@ const AuthPage = () => {
       return
     }
     
-    console.log(isLogin ? 'Login' : 'Signup', { email, password })
+    setLoading(true)
+    
+    try {
+      if (isLogin) {
+        const response = await authAPI.login(email, password)
+        console.log('Login successful:', response.data)
+        onLogin(email)
+      } else {
+        const response = await authAPI.signup(email, password)
+        console.log('Signup successful:', response.data)
+        onLogin(email)
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'An error occurred. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -73,6 +95,7 @@ const AuthPage = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
               required
+              disabled={loading}
             />
           </div>
 
@@ -87,6 +110,7 @@ const AuthPage = () => {
               }}
               placeholder="••••••••"
               required
+              disabled={loading}
             />
           </div>
 
@@ -102,12 +126,13 @@ const AuthPage = () => {
                 }}
                 placeholder="••••••••"
                 required
+                disabled={loading}
               />
             </div>
           )}
 
-          <button type="submit" className="submit-btn">
-            {isLogin ? 'Login' : 'Sign Up'}
+          <button type="submit" className="submit-btn" disabled={loading}>
+            {loading ? 'Loading...' : (isLogin ? 'Login' : 'Sign Up')}
           </button>
         </form>
       </div>
