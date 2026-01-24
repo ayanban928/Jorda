@@ -1,0 +1,195 @@
+.job-view-container {
+  background: white;
+  min-height: 100vh;
+  padding: 40px;
+}
+
+.job-view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.job-view-header h2 {
+  font-family: "Cute Font", cursive;
+  font-size: 2rem;
+  color: #1f2937;
+  margin: 0;
+}
+
+.back-btn {
+  padding: 10px 20px;
+  background: #e5e7eb;
+  color: #374151;
+  border: none;
+  border-radius: 6px;
+  font-family: "Cute Font", cursive;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.back-btn:hover {
+  background: #d1d5db;
+}
+
+.add-job-btn {
+  padding: 12px 24px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: "Cute Font", cursive;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.add-job-btn:hover {
+  background: #1d4ed8;
+}
+
+.add-job-form {
+  background: #f9fafb;
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 32px;
+  border: 2px solid #e5e7eb;
+}
+
+.add-job-form h3 {
+  font-family: "Cute Font", cursive;
+  font-size: 1.5rem;
+  color: #1f2937;
+  margin: 0 0 20px 0;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-field label {
+  font-family: "Cute Font", cursive;
+  font-size: 0.95rem;
+  color: #374151;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.form-field input,
+.form-field select {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-family: "Cute Font", cursive;
+  font-size: 1rem;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.loading,
+.empty-state {
+  text-align: center;
+  font-family: "Cute Font", cursive;
+  font-size: 1.2rem;
+  color: #6b7280;
+  padding: 60px 20px;
+}
+
+.jobs-table {
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+thead {
+  background: #f9fafb;
+}
+
+th {
+  padding: 16px;
+  text-align: left;
+  font-family: "Cute Font", cursive;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+td {
+  padding: 16px;
+  font-family: "Cute Font", cursive;
+  font-size: 0.95rem;
+  color: #1f2937;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.company-cell {
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.notes-cell {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.delete-job-btn {
+  padding: 6px 12px;
+  background: #fee2e2;
+  color: #dc2626;
+  border: none;
+  border-radius: 4px;
+  font-family: "Cute Font", cursive;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.delete-job-btn:hover {
+  background: #fecaca;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .jobs-table {
+    font-size: 0.85rem;
+  }
+  
+  th, td {
+    padding: 12px 8px;
+  }
+}
