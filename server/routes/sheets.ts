@@ -1,29 +1,82 @@
-import express from 'express';
+import { Router } from 'express';
+import { PrismaClient } from '@prisma/client';
+import { authenticateToken, AuthRequest } from '../middleware/auth';
 
-const router = express.Router();
+const router = Router();
+const prisma = new PrismaClient();
 
-// Mock get all sheets
-router.get('/', (req, res) => {
-  res.json([
-    { id: '1', name: 'Summer 2025', jobCount: 5 },
-    { id: '2', name: 'Fall 2025', jobCount: 3 },
-  ]);
+// Get all sheets for logged-in user
+router.get('/', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const sheets = await prisma.sheet.findMany({
+      where: { userId: req.userId! },
+      include: {
+        _count: {
+          select: { jobs: true }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    const formattedSheets = sheets.map(sheet => ({
+      id: sheet.id,
+      name: sheet.name,
+      jobCount: sheet._count.jobs
+    }));
+
+    res.json(formattedSheets);
+  } catch (error) {
+    console.error('Get sheets error:', error);
+    res.status(500).json({ message: 'Failed to fetch sheets' });
+  }
 });
 
-// Mock create sheet
-router.post('/', (req, res) => {
-  const { name } = req.body;
-  res.status(201).json({
-    id: Date.now().toString(),
-    name,
-    jobCount: 0,
-  });
+// Create new sheet
+router.post('/', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const { name } = req.body;
+
+    const sheet = await prisma.sheet.create({
+      data: {
+        name,
+        userId: req.userId!
+      }
+    });
+
+    res.json({ id: sheet.id, name: sheet.name, jobCount: 0 });
+  } catch (error: any) {
+    if (error.code === 'P2002') {
+      res.status(400).json({ message: 'Sheet name already exists' });
+    } else {
+      console.error('Create sheet error:', error);
+      res.status(500).json({ message: 'Failed to create sheet' });
+    }
+  }
 });
 
-// Mock delete sheet
-router.delete('/:id', (req, res) => {
-  const { id } = req.params;
-  res.json({ message: `Sheet ${id} deleted` });
+// Delete sheet
+router.delete('/:id', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+
+    // Verify ownership
+    const sheet = await prisma.sheet.findUnique({
+      where: { id }
+    });
+
+    if (!sheet || sheet.userId !== req.userId) {
+      return res.status(404).json({ message: 'Sheet not found' });
+    }
+
+    await prisma.sheet.delete({
+      where: { id }
+    });
+
+    res.json({ message: 'Sheet deleted successfully' });
+  } catch (error) {
+    console.error('Delete sheet error:', error);
+    res.status(500).json({ message: 'Failed to delete sheet' });
+  }
 });
 
 export default router;
