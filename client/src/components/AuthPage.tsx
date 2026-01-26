@@ -1,143 +1,96 @@
-import { useState } from 'react'
-import Snowfall from 'react-snowfall'
-import { authAPI } from '../services/api'
-import './AuthPage.css'
+import { useState } from 'react';
+import Snowfall from 'react-snowfall';
+import { authAPI } from '../services/api';
+import './AuthPage.css';
 
 interface AuthPageProps {
-  onLogin: (email: string) => void
+  onLogin: () => void;
 }
 
-const AuthPage = ({ onLogin }: AuthPageProps) => {
-  const [isLogin, setIsLogin] = useState(true)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+export default function AuthPage({ onLogin }: AuthPageProps) {
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    
-    // Validate passwords match for signup
-    if (!isLogin && password !== confirmPassword) {
-      setError('Passwords do not match!')
-      return
-    }
-    
-    setLoading(true)
-    
+    e.preventDefault();
+    setError('');
+
     try {
-      if (isLogin) {
-        const response = await authAPI.login(email, password)
-        console.log('Login successful:', response.data)
-        onLogin(email)
-      } else {
-        const response = await authAPI.signup(email, password)
-        console.log('Signup successful:', response.data)
-        onLogin(email)
-      }
+      const response = isLogin
+        ? await authAPI.login(email, password)
+        : await authAPI.signup(email, password);
+
+      // Store token in localStorage
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userId', response.data.userId);
+      
+      onLogin();
     } catch (err: any) {
-      setError(err.response?.data?.error || 'An error occurred. Please try again.')
-    } finally {
-      setLoading(false)
+      setError(err.response?.data?.message || 'Authentication failed');
     }
-  }
+  };
 
   return (
     <div className="auth-container">
       <Snowfall 
-        snowflakeCount={600}
+        color="white"
+        snowflakeCount={200}
         style={{
           position: 'fixed',
           width: '100vw',
           height: '100vh',
         }}
       />
-      
+
       <div className="auth-card">
         <h1 className="title">Jorda</h1>
-        <p className="subtitle">Track your job applications</p>
+        <p className="subtitle">Track Your J*b Journey</p>
 
         <div className="toggle-buttons">
           <button
-            onClick={() => {
-              setIsLogin(true)
-              setError('')
-            }}
             className={isLogin ? 'active' : ''}
+            onClick={() => setIsLogin(true)}
           >
             Login
           </button>
           <button
-            onClick={() => {
-              setIsLogin(false)
-              setError('')
-            }}
             className={!isLogin ? 'active' : ''}
+            onClick={() => setIsLogin(false)}
           >
             Sign Up
           </button>
         </div>
 
-        {error && (
-          <div className="error-message">
-            {error}
-          </div>
-        )}
-
         <form onSubmit={handleSubmit}>
+          {error && <div className="error-message">{error}</div>}
+          
           <div className="form-group">
-            <label>Email</label>
             <input
               type="email"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
               required
-              disabled={loading}
             />
           </div>
-
+          
           <div className="form-group">
-            <label>Password</label>
             <input
               type="password"
+              placeholder="Password"
               value={password}
-              onChange={(e) => {
-                setPassword(e.target.value)
-                setError('')
-              }}
-              placeholder="••••••••"
+              onChange={(e) => setPassword(e.target.value)}
               required
-              disabled={loading}
             />
           </div>
-
-          {!isLogin && (
-            <div className="form-group">
-              <label>Retype Password</label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => {
-                  setConfirmPassword(e.target.value)
-                  setError('')
-                }}
-                placeholder="••••••••"
-                required
-                disabled={loading}
-              />
-            </div>
-          )}
-
-          <button type="submit" className="submit-btn" disabled={loading}>
-            {loading ? 'Loading...' : (isLogin ? 'Login' : 'Sign Up')}
+          
+          <button type="submit" className="submit-btn">
+            {isLogin ? 'Login' : 'Sign Up'}
           </button>
         </form>
       </div>
     </div>
-  )
+  );
 }
-
-export default AuthPage
