@@ -1,45 +1,92 @@
-import express from 'express';
+import { Router } from 'express';
+import { PrismaClient } from '@prisma/client';
+import { authenticateToken, AuthRequest } from '../middleware/auth';
 
-const router = express.Router();
+const router = Router();
+const prisma = new PrismaClient();
 
-// Mock get jobs for a sheet
-router.get('/sheet/:sheetId', (req, res) => {
-  const { sheetId } = req.params;
-  res.json([
-    {
-      id: '1',
-      company: 'Google',
-      position: 'SWE Intern',
-      status: 'Applied',
-      appliedDate: new Date().toISOString(),
-    },
-    {
-      id: '2',
-      company: 'Meta',
-      position: 'Frontend Engineer',
-      status: 'Interview',
-      appliedDate: new Date().toISOString(),
-    },
-  ]);
+// Get all jobs for a specific sheet
+router.get('/sheet/:sheetId', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const { sheetId } = req.params;
+
+    // Verify sheet ownership
+    const sheet = await prisma.sheet.findUnique({
+      where: { id: sheetId }
+    });
+
+    if (!sheet || sheet.userId !== req.userId) {
+      return res.status(404).json({ message: 'Sheet not found' });
+    }
+
+    const jobs = await prisma.job.findMany({
+      where: { sheetId },
+      orderBy: { appliedDate: 'desc' }
+    });
+
+    res.json(jobs);
+  } catch (error) {
+    console.error('Get jobs error:', error);
+    res.status(500).json({ message: 'Failed to fetch jobs' });
+  }
 });
 
-// Mock create job
-router.post('/', (req, res) => {
-  const { sheetId, company, position, status, notes } = req.body;
-  res.status(201).json({
-    id: Date.now().toString(),
-    company,
-    position,
-    status: status || 'Applied',
-    appliedDate: new Date().toISOString(),
-    notes,
-  });
+// Create new job
+router.post('/', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const { company, position, status, appliedDate, notes, sheetId } = req.body;
+
+    // Verify sheet ownership
+    const sheet = await prisma.sheet.findUnique({
+      where: { id: sheetId }
+    });
+
+    if (!sheet || sheet.userId !== req.userId) {
+      return res.status(404).json({ message: 'Sheet not found' });
+    }
+
+    const job = await prisma.job.create({
+      data: {
+        company,
+        position,
+        status: status || 'Applied',
+        appliedDate: appliedDate ? new Date(appliedDate) : new Date(),
+        notes,
+        sheetId
+      }
+    });
+
+    res.json(job);
+  } catch (error) {
+    console.error('Create job error:', error);
+    res.status(500).json({ message: 'Failed to create job' });
+  }
 });
 
-// Mock delete job
-router.delete('/:id', (req, res) => {
-  const { id } = req.params;
-  res.json({ message: `Job ${id} deleted` });
+// Delete job
+router.delete('/:id', authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+
+    // Verify ownership through sheet
+    const job = await prisma.job.findUnique({
+      where: { id },
+      include: { sheet: true }
+    });
+
+    if (!job || job.sheet.userId !== req.userId) {
+      return res.status(404).json({ message: 'Job not found' });
+    }
+
+    await prisma.job.delete({
+      where: { id }
+    });
+
+    res.json({ message: 'Job deleted successfully' });
+  } catch (error) {
+    console.error('Delete job error:', error);
+    res.status(500).json({ message: 'Failed to delete job' });
+  }
 });
 
 export default router;
