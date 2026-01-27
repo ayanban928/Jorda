@@ -8,11 +8,10 @@ Track your job applications organized by recruitment cycles.
 
 ## Features
 
-- 🔐 User authentication with JWT
-- 📊 Create multiple recruitment cycle sheets (e.g., "Summer 2025", "Fall 2026")
-- 💼 Track job applications with details (company, position, status, notes)
-- 🗑️ Delete sheets and jobs
-- ❄️ Beautiful winter-themed UI with snowfall animation
+- Create multiple recruitment cycle sheets (e.g., "Summer 2025", "Fall 2026")
+- Track job applications with details (company, position, status, notes)
+- Delete sheets and jobs
+- Beautiful winter-themed UI with snowfall animation
 
 ## Tech Stack
 
