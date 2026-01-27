@@ -2,9 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-import authRoutes from './routes/auth.ts';
-import sheetRoutes from './routes/sheets.ts';
-import jobRoutes from './routes/jobs.ts';
+import authRoutes from './routes/auth';
+import sheetRoutes from './routes/sheets';
+import jobRoutes from './routes/jobs';
 
 dotenv.config();
 
