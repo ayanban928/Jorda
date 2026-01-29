@@ -4,7 +4,7 @@ import { authAPI } from '../services/api';
 import './AuthPage.css';
 
 interface AuthPageProps {
-  onLogin: () => void;
+  onLogin: (email: string, token: string) => void;
 }
 
 export default function AuthPage({ onLogin }: AuthPageProps) {
@@ -18,17 +18,14 @@ export default function AuthPage({ onLogin }: AuthPageProps) {
     setError('');
 
     try {
-      const response = isLogin
-        ? await authAPI.login(email, password)
-        : await authAPI.signup(email, password);
-
-      // Store token in localStorage
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('userId', response.data.userId);
+      const endpoint = isLogin ? '/login' : '/register';
+      const { data } = await authAPI.post(endpoint, { email, password });
       
-      onLogin();
+      onLogin(email, data.token);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Authentication failed');
+      console.error('Auth error:', err);
+      const errorMessage = err.response?.data?.error || err.message || 'An error occurred';
+      setError(errorMessage);
     }
   };
 
