@@ -1,111 +1,157 @@
-import { useState, useEffect } from 'react'
-import { jobsAPI } from '../services/api'
-import './JobView.css'
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { jobsAPI, sheetsAPI } from '../services/api';
+import './JobView.css';
 
 interface Job {
-  id: string
-  company: string
-  position: string
-  status: string
-  appliedDate: string
-  notes?: string
+  id: string;
+  company: string;
+  position: string;
+  status: string;
+  dateApplied: string;
+  notes?: string;
+}
+
+interface Sheet {
+  id: string;
+  name: string;
+  createdAt: string;
 }
 
 interface JobViewProps {
-  sheetId: string
-  sheetName: string
-  onBack: () => void
+  userEmail: string;
+  onLogout: () => void;
 }
 
-const JobView = ({ sheetId, sheetName, onBack }: JobViewProps) => {
-  const [jobs, setJobs] = useState<Job[]>([])
-  const [loading, setLoading] = useState(true)
-  const [showAddForm, setShowAddForm] = useState(false)
-  const [newJob, setNewJob] = useState({
+export default function JobView({ userEmail, onLogout }: JobViewProps) {
+  const { sheetId } = useParams<{ sheetId: string }>();
+  const navigate = useNavigate();
+  const [sheet, setSheet] = useState<Sheet | null>(null);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({
     company: '',
     position: '',
     status: 'Applied',
+    dateApplied: new Date().toISOString().split('T')[0],
     notes: ''
-  })
+  });
 
   useEffect(() => {
-    loadJobs()
-  }, [sheetId])
+    if (sheetId) {
+      loadSheetAndJobs();
+    }
+  }, [sheetId]);
 
-  const loadJobs = async () => {
+  const loadSheetAndJobs = async () => {
     try {
-      const response = await jobsAPI.getBySheet(sheetId)
-      setJobs(response.data)
-    } catch (error) {
-      console.error('Failed to load jobs:', error)
+      // Load sheet details
+      const { data: sheetData } = await sheetsAPI.get('/');
+      const currentSheet = sheetData.find((s: Sheet) => s.id === sheetId);
+      
+      if (!currentSheet) {
+        navigate('/');
+        return;
+      }
+      
+      setSheet(currentSheet);
+
+      // Load jobs
+      const { data: jobsData } = await jobsAPI.get(`/${sheetId}`);
+      setJobs(jobsData);
+    } catch (err) {
+      console.error('Failed to load data:', err);
+      navigate('/');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  const handleAddJob = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!newJob.company.trim() || !newJob.position.trim()) return
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      const { data } = await jobsAPI.post('/', {
+        ...formData,
+        sheetId
+      });
+      
+      setJobs([...jobs, data]);
+      setFormData({
+        company: '',
+        position: '',
+        status: 'Applied',
+        dateApplied: new Date().toISOString().split('T')[0],
+        notes: ''
+      });
+      setShowForm(false);
+    } catch (err: any) {
+      console.error('Failed to create job:', err);
+      alert(err.response?.data?.error || 'Failed to create job');
+    }
+  };
+
+  const handleDelete = async (jobId: string) => {
+    if (!confirm('Are you sure you want to delete this job?')) return;
 
     try {
-      await jobsAPI.create({ ...newJob, sheetId })
-      setNewJob({ company: '', position: '', status: 'Applied', notes: '' })
-      setShowAddForm(false)
-      loadJobs()
-    } catch (error) {
-      console.error('Failed to add job:', error)
+      await jobsAPI.delete(`/${jobId}`);
+      setJobs(jobs.filter(j => j.id !== jobId));
+    } catch (err) {
+      console.error('Failed to delete job:', err);
+      alert('Failed to delete job');
     }
-  }
+  };
 
-  const handleDeleteJob = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this job?')) return
-
-    try {
-      await jobsAPI.delete(id)
-      loadJobs()
-    } catch (error) {
-      console.error('Failed to delete job:', error)
-    }
-  }
-
-  const statusColors: { [key: string]: string } = {
-    Applied: '#3b82f6',
-    Interview: '#f59e0b',
-    Offer: '#10b981',
-    Rejected: '#ef4444',
+  if (loading || !sheet) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        background: 'linear-gradient(to bottom, #1e3a8a, #3b82f6)',
+        color: 'white'
+      }}>
+        Loading...
+      </div>
+    );
   }
 
   return (
     <div className="job-view-container">
       <div className="job-view-header">
-        <button onClick={onBack} className="back-btn">← Back</button>
-        <h2>{sheetName}</h2>
-        <button onClick={() => setShowAddForm(true)} className="add-job-btn">
-          + Add Job
+        <div className="header-left">
+          <button onClick={() => navigate('/')} className="back-btn">← Back to Sheets</button>
+          <div className="header-title">
+            <h2>{sheet.name}</h2>
+          </div>
+        </div>
+        <button onClick={() => setShowForm(!showForm)} className="add-job-btn">
+          {showForm ? 'Cancel' : '+ Add Job'}
         </button>
       </div>
 
-      {showAddForm && (
-        <form onSubmit={handleAddJob} className="add-job-form">
-          <h3>Add New Job</h3>
+      {showForm && (
+        <form onSubmit={handleSubmit} className="add-job-form">
+          <h3>Add New Job Application</h3>
           <div className="form-row">
             <div className="form-field">
-              <label>Company</label>
+              <label>Company *</label>
               <input
                 type="text"
-                value={newJob.company}
-                onChange={(e) => setNewJob({ ...newJob, company: e.target.value })}
-                placeholder="Google"
+                value={formData.company}
+                onChange={(e) => setFormData({...formData, company: e.target.value})}
                 required
               />
             </div>
             <div className="form-field">
-              <label>Position</label>
+              <label>Position *</label>
               <input
                 type="text"
-                value={newJob.position}
-                onChange={(e) => setNewJob({ ...newJob, position: e.target.value })}
-                placeholder="Software Engineer Intern"
+                value={formData.position}
+                onChange={(e) => setFormData({...formData, position: e.target.value})}
                 required
               />
             </div>
@@ -114,8 +160,8 @@ const JobView = ({ sheetId, sheetName, onBack }: JobViewProps) => {
             <div className="form-field">
               <label>Status</label>
               <select
-                value={newJob.status}
-                onChange={(e) => setNewJob({ ...newJob, status: e.target.value })}
+                value={formData.status}
+                onChange={(e) => setFormData({...formData, status: e.target.value})}
               >
                 <option value="Applied">Applied</option>
                 <option value="Interview">Interview</option>
@@ -124,36 +170,32 @@ const JobView = ({ sheetId, sheetName, onBack }: JobViewProps) => {
               </select>
             </div>
             <div className="form-field">
-              <label>Notes (optional)</label>
+              <label>Date Applied</label>
               <input
-                type="text"
-                value={newJob.notes}
-                onChange={(e) => setNewJob({ ...newJob, notes: e.target.value })}
-                placeholder="Referred by John"
+                type="date"
+                value={formData.dateApplied}
+                onChange={(e) => setFormData({...formData, dateApplied: e.target.value})}
               />
             </div>
           </div>
-          <div className="form-actions">
-            <button type="submit" className="save-btn">Add Job</button>
-            <button
-              type="button"
-              onClick={() => {
-                setShowAddForm(false)
-                setNewJob({ company: '', position: '', status: 'Applied', notes: '' })
-              }}
-              className="cancel-btn"
-            >
-              Cancel
-            </button>
+          <div className="form-field">
+            <label>Notes</label>
+            <input
+              type="text"
+              value={formData.notes}
+              onChange={(e) => setFormData({...formData, notes: e.target.value})}
+              placeholder="Optional notes..."
+            />
           </div>
+          <button type="submit" className="form-submit-btn">Submit</button>
         </form>
       )}
 
       {loading ? (
-        <p className="loading">Loading jobs...</p>
+        <div className="loading">Loading jobs...</div>
       ) : jobs.length === 0 ? (
         <div className="empty-state">
-          <p>No jobs yet. Add your first application!</p>
+          No jobs yet. Add your first application!
         </div>
       ) : (
         <div className="jobs-table">
@@ -163,7 +205,7 @@ const JobView = ({ sheetId, sheetName, onBack }: JobViewProps) => {
                 <th>Company</th>
                 <th>Position</th>
                 <th>Status</th>
-                <th>Applied Date</th>
+                <th>Date Applied</th>
                 <th>Notes</th>
                 <th>Actions</th>
               </tr>
@@ -173,21 +215,11 @@ const JobView = ({ sheetId, sheetName, onBack }: JobViewProps) => {
                 <tr key={job.id}>
                   <td className="company-cell">{job.company}</td>
                   <td>{job.position}</td>
-                  <td>
-                    <span
-                      className="status-badge"
-                      style={{ backgroundColor: statusColors[job.status] || '#6b7280' }}
-                    >
-                      {job.status}
-                    </span>
-                  </td>
-                  <td>{new Date(job.appliedDate).toLocaleDateString()}</td>
+                  <td><span className="status-badge">{job.status}</span></td>
+                  <td>{new Date(job.dateApplied).toLocaleDateString()}</td>
                   <td className="notes-cell">{job.notes || '-'}</td>
                   <td>
-                    <button
-                      onClick={() => handleDeleteJob(job.id)}
-                      className="delete-job-btn"
-                    >
+                    <button onClick={() => handleDelete(job.id)} className="delete-job-btn">
                       Delete
                     </button>
                   </td>
@@ -198,7 +230,5 @@ const JobView = ({ sheetId, sheetName, onBack }: JobViewProps) => {
         </div>
       )}
     </div>
-  )
+  );
 }
-
-export default JobView
