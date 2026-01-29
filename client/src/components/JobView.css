@@ -1,6 +1,9 @@
 .job-view-container {
-  background: white;
   min-height: 100vh;
+  background: linear-gradient(to bottom, #1e3a8a, #3b82f6);
+  color: white;
+  position: relative;
+  overflow: hidden;
   padding: 40px;
 }
 
@@ -11,59 +14,78 @@
   margin-bottom: 32px;
 }
 
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.header-title {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
 .job-view-header h2 {
-  font-family: "Cute Font", cursive;
   font-size: 2rem;
-  color: #1f2937;
+  color: white;
   margin: 0;
+  font-weight: 600;
 }
 
 .back-btn {
   padding: 10px 20px;
-  background: #e5e7eb;
-  color: #374151;
+  background: rgba(229, 231, 235, 0.9);
+  color: #1e3a8a;
   border: none;
-  border-radius: 6px;
-  font-family: "Cute Font", cursive;
+  border-radius: 8px;
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.3s;
+  width: fit-content;
 }
 
 .back-btn:hover {
-  background: #d1d5db;
+  background: rgba(209, 213, 219, 1);
+  transform: translateY(-2px);
 }
 
 .add-job-btn {
   padding: 12px 24px;
-  background: #2563eb;
+  background: rgba(16, 185, 129, 0.9);
   color: white;
   border: none;
   border-radius: 8px;
-  font-family: "Cute Font", cursive;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.3s;
 }
 
 .add-job-btn:hover {
-  background: #1d4ed8;
+  background: rgba(5, 150, 105, 1);
+  transform: translateY(-2px);
 }
 
 .add-job-form {
-  background: #f9fafb;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 24px;
   border-radius: 12px;
   margin-bottom: 32px;
-  border: 2px solid #e5e7eb;
+  position: relative;
+  z-index: 5;
 }
 
 .add-job-form h3 {
-  font-family: "Cute Font", cursive;
   font-size: 1.5rem;
-  color: #1f2937;
+  color: white;
   margin: 0 0 20px 0;
+  font-weight: 600;
 }
 
 .form-row {
@@ -79,9 +101,8 @@
 }
 
 .form-field label {
-  font-family: "Cute Font", cursive;
   font-size: 0.95rem;
-  color: #374151;
+  color: white;
   margin-bottom: 6px;
   font-weight: 500;
 }
@@ -89,95 +110,129 @@
 .form-field input,
 .form-field select {
   padding: 10px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-family: "Cute Font", cursive;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
   font-size: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1e3a8a;
+}
+
+.form-field input::placeholder {
+  color: rgba(30, 58, 138, 0.6);
 }
 
 .form-field input:focus,
 .form-field select:focus {
   outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  border-color: rgba(16, 185, 129, 0.8);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.form-submit-btn {
+  margin-top: 20px;
+  padding: 12px 24px;
+  background: rgba(16, 185, 129, 0.9);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 100%;
+}
+
+.form-submit-btn:hover {
+  background: rgba(5, 150, 105, 1);
+  transform: translateY(-2px);
 }
 
 .loading,
 .empty-state {
   text-align: center;
-  font-family: "Cute Font", cursive;
   font-size: 1.2rem;
-  color: #6b7280;
+  color: white;
   padding: 60px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  position: relative;
+  z-index: 5;
 }
 
 .jobs-table {
   overflow-x: auto;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  z-index: 5;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  background: transparent;
 }
 
 thead {
-  background: #f9fafb;
+  background: rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
 }
 
 th {
   padding: 16px;
   text-align: left;
-  font-family: "Cute Font", cursive;
   font-size: 1rem;
   font-weight: 600;
-  color: #374151;
-  border-bottom: 2px solid #e5e7eb;
+  color: white;
 }
 
 td {
   padding: 16px;
-  font-family: "Cute Font", cursive;
   font-size: 0.95rem;
-  color: #1f2937;
-  border-bottom: 1px solid #e5e7eb;
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .company-cell {
   font-weight: 600;
-  color: #2563eb;
+  color: #fbbf24;
 }
 
 .status-badge {
   display: inline-block;
   padding: 4px 12px;
   border-radius: 12px;
-  color: white;
   font-size: 0.85rem;
   font-weight: 500;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  backdrop-filter: blur(10px);
 }
 
 .notes-cell {
-  color: #6b7280;
+  color: rgba(255, 255, 255, 0.8);
   font-style: italic;
 }
 
 .delete-job-btn {
   padding: 6px 12px;
-  background: #fee2e2;
-  color: #dc2626;
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
   border: none;
-  border-radius: 4px;
-  font-family: "Cute Font", cursive;
+  border-radius: 6px;
   font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.3s;
 }
 
 .delete-job-btn:hover {
-  background: #fecaca;
+  background: rgba(220, 38, 38, 1);
+  transform: translateY(-2px);
 }
 
 @media (max-width: 768px) {

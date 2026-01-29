@@ -1,205 +1,183 @@
 .dashboard-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #3730a3 100%);
+  background: linear-gradient(to bottom, #1e3a8a, #3b82f6);
+  color: white;
+  position: relative;
+  overflow: hidden;
 }
 
 .dashboard-header {
-  background: rgba(255, 255, 255, 0.95);
-  padding: 20px 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  z-index: 10;
 }
 
 .dashboard-header h1 {
-  font-family: "Cute Font", cursive;
-  font-size: 2rem;
-  color: #1f2937;
+  font-size: 2.5rem;
   margin: 0;
+  font-weight: 700;
 }
 
 .user-info {
   display: flex;
   align-items: center;
-  gap: 16px;
-  font-family: "Cute Font", cursive;
-}
-
-.user-info span {
-  color: #6b7280;
+  gap: 1rem;
   font-size: 1rem;
 }
 
 .logout-btn {
-  padding: 8px 16px;
-  background: #ef4444;
+  padding: 0.5rem 1.5rem;
+  background: rgba(239, 68, 68, 0.9);
   color: white;
   border: none;
-  border-radius: 6px;
-  font-family: "Cute Font", cursive;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s;
+  font-weight: 600;
+  transition: all 0.3s;
 }
 
 .logout-btn:hover {
-  background: #dc2626;
-}
-
-.dashboard-main {
-  padding: 40px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.sheets-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.sheets-header h2 {
-  font-family: "Cute Font", cursive;
-  font-size: 2rem;
-  color: white;
-  margin: 0;
-}
-
-.create-btn {
-  padding: 12px 24px;
-  background: white;
-  color: #2563eb;
-  border: none;
-  border-radius: 8px;
-  font-family: "Cute Font", cursive;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.create-btn:hover {
+  background: rgba(220, 38, 38, 1);
   transform: translateY(-2px);
 }
 
-.create-form {
-  background: white;
-  padding: 20px;
+.dashboard-main {
+  padding: 3rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 5;
+}
+
+.dashboard-main h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.error-message {
+  background: rgba(239, 68, 68, 0.9);
+  padding: 1rem;
   border-radius: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(10px);
 }
 
-.create-form input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-family: "Cute Font", cursive;
-  font-size: 1rem;
-  margin-bottom: 12px;
-}
-
-.form-actions {
+.create-sheet-form {
   display: flex;
-  gap: 8px;
+  gap: 1rem;
+  margin-bottom: 3rem;
 }
 
-.save-btn, .cancel-btn {
-  padding: 10px 20px;
+.create-sheet-form input {
+  flex: 1;
+  padding: 1rem;
   border: none;
-  border-radius: 6px;
-  font-family: "Cute Font", cursive;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1e3a8a;
+}
+
+.create-sheet-form input::placeholder {
+  color: rgba(30, 58, 138, 0.6);
+}
+
+.create-sheet-form button {
+  padding: 1rem 2rem;
+  background: rgba(16, 185, 129, 0.9);
+  color: white;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s;
+  font-weight: 600;
+  transition: all 0.3s;
 }
 
-.save-btn {
-  background: #2563eb;
-  color: white;
+.create-sheet-form button:hover {
+  background: rgba(5, 150, 105, 1);
+  transform: translateY(-2px);
 }
 
-.save-btn:hover {
-  background: #1d4ed8;
-}
-
-.cancel-btn {
-  background: #e5e7eb;
-  color: #374151;
-}
-
-.cancel-btn:hover {
-  background: #d1d5db;
-}
-
-.loading, .empty-state {
+.empty-state {
   text-align: center;
-  color: white;
-  font-family: "Cute Font", cursive;
-  font-size: 1.2rem;
-  padding: 40px;
+  padding: 4rem 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .sheets-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
 }
 
 .sheet-card {
-  background: white;
-  padding: 24px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s;
 }
 
 .sheet-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .sheet-card h3 {
-  font-family: "Cute Font", cursive;
   font-size: 1.5rem;
-  color: #1f2937;
-  margin: 0 0 8px 0;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
 }
 
-.job-count {
-  font-family: "Cute Font", cursive;
-  color: #6b7280;
-  margin: 0 0 16px 0;
+.sheet-card p {
+  opacity: 0.9;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
 }
 
-.card-actions {
+.sheet-actions {
   display: flex;
-  gap: 8px;
+  gap: 1rem;
 }
 
-.view-btn, .delete-btn {
+.sheet-actions button {
   flex: 1;
-  padding: 10px;
+  padding: 0.75rem;
   border: none;
-  border-radius: 6px;
-  font-family: "Cute Font", cursive;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s;
+  font-weight: 600;
+  transition: all 0.3s;
 }
 
-.view-btn {
-  background: #2563eb;
+.sheet-actions button:first-child {
+  background: rgba(59, 130, 246, 0.9);
   color: white;
 }
 
-.view-btn:hover {
-  background: #1d4ed8;
+.sheet-actions button:first-child:hover {
+  background: rgba(37, 99, 235, 1);
+  transform: translateY(-2px);
 }
 
 .delete-btn {
-  background: #fee2e2;
-  color: #dc2626;
+  background: rgba(239, 68, 68, 0.9) !important;
+  color: white;
 }
 
 .delete-btn:hover {
-  background: #fecaca;
+  background: rgba(220, 38, 38, 1) !important;
+  transform: translateY(-2px) !important;
 }
