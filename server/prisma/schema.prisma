@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
@@ -16,22 +16,22 @@ model User {
 }
 
 model Sheet {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   name      String
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  jobs      Job[]
   createdAt DateTime @default(now())
+  jobs      Job[]
 
   @@unique([userId, name])
 }
 
 model Job {
-  id          String   @id @default(cuid())
+  id          String   @id @default(uuid())
   company     String
   position    String
   status      String   @default("Applied")
-  appliedDate DateTime @default(now())
+  dateApplied DateTime @default(now())
   notes       String?
   sheetId     String
   sheet       Sheet    @relation(fields: [sheetId], references: [id], onDelete: Cascade)
