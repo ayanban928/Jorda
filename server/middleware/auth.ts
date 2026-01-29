@@ -3,31 +3,31 @@ import jwt from 'jsonwebtoken';
 
 export interface AuthRequest extends Request {
   userId?: string;
-  userEmail?: string;
+  user?: {
+    userId: string;
+    email: string;
+  };
 }
 
-export const authenticateToken = (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction
-) => {
+export const authenticateToken = (req: AuthRequest, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+  const token = authHeader && authHeader.split(' ')[1];
+
+  console.log('Auth header:', authHeader);
+  console.log('Token:', token);
 
   if (!token) {
-    return res.status(401).json({ message: 'Access token required' });
+    return res.status(401).json({ error: 'No token provided' });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
-      userId: string;
-      email: string;
-    };
-    
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    console.log('Decoded token:', decoded);
+    req.user = { userId: decoded.userId, email: decoded.email };
     req.userId = decoded.userId;
-    req.userEmail = decoded.email;
     next();
   } catch (error) {
-    return res.status(403).json({ message: 'Invalid or expired token' });
+    console.error('Token verification error:', error);
+    return res.status(401).json({ error: 'Invalid token' });
   }
 };
