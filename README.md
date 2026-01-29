@@ -5,6 +5,8 @@ Track your job applications organized by recruitment cycles.
 ## Screenshot
 
 ![Jorda Login Page](./homepage.png)
+![Jorda Sheets Page](./sheetspage.png)
+![Jorda Sheets Job View Page](./jobviewpage.png)
 
 ## Features
 
